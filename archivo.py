@@ -55,7 +55,7 @@ st.dataframe(df)
 
 st.sidebar.header("FILTROS")
 
-Ciudades = st.sidebar.multiselect(
+ciudades = st.sidebar.multiselect(
     "Seleciona la ciudad:",
     placeholder="Elige una ciudad",
     options=df['ciudad'].unique(),
@@ -91,6 +91,32 @@ aliados = st.sidebar.multiselect(
 )
 
 
+
+
+
+# ---------- APLICACIÓN DE FILTROS ----------
+# Aplicamos filtros dinámicamente solo si se selecciona algo
+
+df_filtrado = df.copy()
+
+if ciudades:
+    df_filtrado = df_filtrado[df_filtrado['ciudad'].isin(ciudades)]
+
+if tipos_ot:
+    df_filtrado = df_filtrado[df_filtrado['tipo_ot'].isin(tipos_ot)]
+
+if cumple_campo:
+    df_filtrado = df_filtrado[df_filtrado['cumple_campo'].isin(cumple_campo)]
+
+if zone:
+    df_filtrado = df_filtrado[df_filtrado['zone_owner'].isin(zone)]
+
+if aliados:
+    df_filtrado = df_filtrado[df_filtrado['aliado'].isin(aliados)]
+
+# ---------- VISUALIZACIÓN DE LOS DATOS FILTRADOS ----------
+st.subheader("Vista previa de los datos filtrados")
+st.dataframe(df_filtrado)
 
 
 # ---------------- ESPACIO PARA GRÁFICAS ----------------
