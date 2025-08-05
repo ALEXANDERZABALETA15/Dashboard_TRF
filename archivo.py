@@ -115,12 +115,92 @@ if aliados:
     df_filtrado = df_filtrado[df_filtrado['aliado'].isin(aliados)]
 
 # ---------- VISUALIZACIÓN DE LOS DATOS FILTRADOS ----------
-st.subheader("Vista previa de los datos filtrados")
+st.subheader("Datos filtrados")
 st.dataframe(df_filtrado)
 
 
 # ---------------- ESPACIO PARA GRÁFICAS ----------------
 st.subheader("Gráficas de Análisis")
+
+#1. Gráfico de barras por cantidad de OTs por ciudad
+#¿Qué muestra? Número total de reportes (OTs) por cada ciudad.
+
+fig = px.bar(df_filtrado, x='ciudad', title='Cantidad de reportes por ciudad')
+st.plotly_chart(fig)
+
+#2. Gráfico de torta (Pie Chart) – Distribución por aliados
+#¿Qué muestra? Porcentaje de participación de cada aliado.
+
+figura = px.pie(df_filtrado, names='aliado', title='Distribución por aliado')
+st.plotly_chart(figura)
+
+#3. Gráfico de barras por cumplimiento en campo (cumple_campo)
+#¿Qué muestra? Cuántos reportes cumplieron o no cumplieron.
+
+# Paso 1: Contar valores y resetear el índice
+cumple_data = df_filtrado['cumple_campo'].value_counts().reset_index()
+
+# Paso 2: Renombrar las columnas para que Plotly las entienda
+cumple_data.columns = ['cumple_campo', 'cantidad']
+
+# Paso 3: Crear el gráfico
+grafico_barras = px.bar(
+    cumple_data,
+    x='cumple_campo',
+    y='cantidad',
+    labels={'cumple_campo': 'Cumple en Campo', 'cantidad': 'Cantidad'},
+    title='Cumplimiento en Campo'
+)
+
+# Mostrarlo
+st.plotly_chart(grafico_barras)
+
+
+#4. Gráfico de barras por tipo de OT
+#¿Qué muestra? Distribución de los tipos de orden de trabajo.
+
+# Paso 1: Contar tipos de OT y resetear el índice
+tipo_ot_data = df_filtrado['tipo_ot'].value_counts().reset_index()
+
+# Paso 2: Renombrar las columnas para que tengan nombres claros
+tipo_ot_data.columns = ['tipo_ot', 'cantidad']
+
+# Paso 3: Crear el gráfico
+grafico_tipo_ot = px.bar(
+    tipo_ot_data,
+    x='tipo_ot',
+    y='cantidad',
+    labels={'tipo_ot': 'Tipo de OT', 'cantidad': 'Cantidad'},
+    title='Tipos de OT registradas'
+)
+
+# Mostrarlo en el dashboard
+st.plotly_chart(grafico_tipo_ot)
+
+
+#6. Gráfico de barras horizontales por zone_owner
+#¿Qué muestra? Cantidad de reportes por dueño de zona.
+
+# Paso 1: Contar cuántas veces aparece cada zone_owner
+zone_data = df_filtrado['zone_owner'].value_counts().reset_index()
+
+# Paso 2: Renombrar las columnas correctamente
+zone_data.columns = ['zone_owner', 'cantidad']
+
+# Paso 3: Crear el gráfico horizontal
+grafico_barras_horizontales = px.bar(
+    zone_data,
+    x='cantidad',
+    y='zone_owner',
+    orientation='h',  # Esta propiedad hace que sea horizontal
+    labels={'zone_owner': 'Zone Owner', 'cantidad': 'Cantidad'},
+    title='Reportes por Zone Owner'
+)
+
+# Paso 4: Mostrar el gráfico
+st.plotly_chart(grafico_barras_horizontales)
+
+
 
 # Aquí irán tus futuras visualizaciones 
 st.write("Aquí se mostrarán las gráficas y análisis visuales.")
